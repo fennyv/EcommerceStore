@@ -1,0 +1,175 @@
+﻿@using EcommerceStoreMVC.Models.DTO
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
+@model ProfileDto
+@{
+    ViewData["Title"] = "Profile";
+    var appUser = await UserManager.GetUserAsync(User);
+
+    string userRole = "";
+    if (User.IsInRole("admin"))
+    {
+        userRole = "Admin";
+    }
+    if (User.IsInRole("seller"))
+    {
+        userRole = "Seller";
+    }
+    if (User.IsInRole("client"))
+    {
+        userRole = "Client";
+    }
+
+
+}
+<script>
+    function clearViewBag() {
+
+        var alertNode = document.querySelector('.alert');
+        if (alertNode) {
+            var alert = bootstrap.Alert.getOrCreateInstance(alertNode);
+            alert.close();
+        }
+
+    }
+</script>
+<div class="container m-5 ">
+    <div class="row">
+        <div class="col-md-6 mx-auto border">
+            @if (ViewBag.SuccessMessage != null)
+            {
+                <div class="row mb-3">
+                    <div class="mx-auto ">
+
+                        <div class="alert alert-success alert-dismissible fade show shadow" role="alert">
+                            @ViewBag.SuccessMessage
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    </div>
+                </div>
+            }
+            @if (ViewBag.ErrorMessage != null)
+            {
+                <div class="row mb-3">
+                    <div class=" mx-auto ">
+
+                        <div class="alert alert-danger alert-dismissible fade show shadow" role="alert">
+                            @ViewBag.ErrorMessage
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    </div>
+                </div>
+            }
+             
+                    <h2 class="text-center">Profile</h2>
+                    <hr />
+               
+            <div class="row mb-3">
+                <div class="col-md-6 mx-auto ">
+                    <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+                </div>
+            </div>
+            <div class="row mb-3 ">
+
+                <div class="col-md-4 offset-3"> First Name </div>
+                <div class="col-sm-5"> @appUser?.FirstName </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-4 offset-3"> Last Name </div>
+                <div class="col-sm-5"> @appUser?.LastName </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-4 offset-3"> Email </div>
+                <div class="col-sm-5"> @appUser?.Email </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-4 offset-3"> Phone </div>
+                <div class="col-sm-5"> @appUser?.PhoneNumber </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-4 offset-3"> Address </div>
+                <div class="col-sm-5"> @appUser?.Address </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-4 offset-3"> Role </div>
+                <div class="col-sm-5"> @userRole </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-4 offset-3"> Created At </div>
+                <div class="col-sm-5"> @appUser?.CreatedDate </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-4 offset-3"> Updated At </div>
+                <div class="col-sm-5"> @appUser?.UpdatedDate </div>
+            </div>
+            <div class="row mb-3">
+                <hr />
+            </div>
+
+            <div class="row  mb-3">
+
+                <div class="col-sm-4 offset-3  d-grid ">
+                    <button type="submit" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#EditProfileModal">Edit Profile</button>
+
+                </div>
+                <div class="col-sm-4   d-grid ">
+                    <a class="btn btn-warning " asp-controller="Account" asp-action="UpdatePassword" role="button">Change Password</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Form -->
+    <div class="modal fade" id="EditProfileModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">Modal title</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post">
+                        <div class="mb-3">
+                            <label for="firstName" class="form-label">First Name</label>
+                            <input type="text" class="form-control" id="firstName" name="firstName" value="@Model.FirstName" required>
+
+                        </div>
+                        <div class="mb-3">
+                            <label for="lastName" class="form-label">Last Name</label>
+                            <input type="text" class="form-control" id="lastName" name="lastName" value="@Model.LastName" required>
+
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" value="@Model.Email" required>
+
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="PhoneNumber" class="form-label">Phone</label>
+                            <input type="text" class="form-control" id="PhoneNumber" name="PhoneNumber" value="@Model.PhoneNumber">
+                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label for="address" class="form-label">Address</label>
+                            <input type="text" class="form-control" id="address" name="address" value="@Model.Address" required>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="clearViewBag()">Close</button>
+                            <button type="submit" class="btn btn-primary">Save changes</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
